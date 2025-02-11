@@ -4,6 +4,15 @@ Load, run the game and enjoy :)
 
 This is the main work example at first programming class at UNIVALI - Universidade do Vale do Itajaí.
 
+# Controls
+
+W > Up
+
+A > Left
+
+S > Down
+
+D > Right
 
 # Statement:
 
