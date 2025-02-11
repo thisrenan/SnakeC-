@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1739302277 source:c:\_dev\snakec-\main.cpp
+	<iostream>
+	<conio.h>
+	<Windows.h>
+	<unistd.h>
+

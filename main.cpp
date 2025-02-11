@@ -8,84 +8,81 @@
 
 using namespace std;
 
-    const int alturaQuadro = 25;
-    const int larguraQuadro = 25;
-    const int tempoJogo = 300;
+    const int heightBoard = 25;
+    const int widthBoard = 25;
+    const int playTime = 300;
 
-    int direcao; //parado = 0; esquerda = 1; direita = 2; cima = 3; baixo = 4;
+    int direction; //stopped = 0; left = 1; right = 2; up = 3; down = 4;
     bool gameOver = false;
-    int quadro[alturaQuadro][larguraQuadro]; //0 = nada, 1 = parede, 2 = fruit, 3 = cobra
-    int pontuacao = 0;
-    int fruitX = rand() % alturaQuadro;
-    int fruitY = rand() % larguraQuadro;
-    int cobraX = alturaQuadro /2;
-    int cobraY = larguraQuadro /2;
-    int tamanhoCobra = 1;
-    int tamanhoCobraAux;
+    int board[heightBoard][widthBoard]; //0 = blank, 1 = wall, 2 = fruit, 3 = snake
+    int score = 0;
+    int fruitX = rand() % heightBoard;
+    int fruitY = rand() % widthBoard;
+    int snakeX = heightBoard /2;
+    int snakeY = widthBoard /2;
+    int snakeSize = 1;
+    int snakeSizeAux;
 
-void MontaQuadro()
+void SetupBoard()
 {
-    for (int i=0; i < alturaQuadro; i++)
+    for (int i=0; i < heightBoard; i++)
     {
-        for (int j=0; j < larguraQuadro; j++)
+        for (int j=0; j < widthBoard; j++)
         {
-            if ((i == 0) || (i == alturaQuadro-1) || (j == 0) || (j == alturaQuadro-1))
+            if ((i == 0) || (i == heightBoard-1) || (j == 0) || (j == heightBoard-1))
             {
-                quadro[i][j] = 1;
+                board[i][j] = 1;
             }
             else
             {
-                quadro[i][j] = 0;
+                board[i][j] = 0;
             }
         }
     }
 
-    quadro[cobraX][cobraY] = 3;
-    quadro[fruitX][fruitY] = 2;
+    board[snakeX][snakeY] = 3;
+    board[fruitX][fruitY] = 2;
 }
 
-void ExibeQuadro()
+void ShowBoard()
 {
     system("cls");
 
-    for (int i=0; i < alturaQuadro; i++)
+    for (int i=0; i < heightBoard; i++)
     {
-        for (int j=0; j < larguraQuadro; j++)
+        for (int j=0; j < widthBoard; j++)
         {
-            //cout<<quadro[i][j];
-
-            if (quadro[i][j] == 0)
+            if (board[i][j] == 0)
                 cout<<" ";
-            else if (quadro[i][j] == 1)
+            else if (board[i][j] == 1)
                 cout<<"#";
-            else if (quadro[i][j] == 2)
+            else if (board[i][j] == 2)
                 cout<<"@";
             else
                 cout<<"*";
-
         }
         cout<<endl;
     }
-    cout<<"Score: "<<pontuacao;
+    cout<<"Score: "<<score;
 }
 
-void LerTeclado()
+void ReadKeyboard()
 {
     if (_kbhit())
     {
         switch (_getch())
         {
             case 'a':
-                direcao = 1;
+                direction = 1;
             break;
             case 'd':
-                direcao = 2;
+                direction = 2;
             break;
             case 'w':
-                direcao = 3;
+                direction = 3;
             break;
             case 's':
-                direcao = 4;
+                direction = 4;
             break;
             case 'x':
                 gameOver = true;
@@ -94,125 +91,125 @@ void LerTeclado()
     }
 }
 
-void VerificaColisao()
+void CheckColision()
 {
-    if (quadro[cobraX][cobraY] == 1)
+    if (board[snakeX][snakeY] == 1)
     {
         gameOver = true;
     }
-    else if (quadro[cobraX][cobraY] >= 3)
+    else if (board[snakeX][snakeY] >= 3)
     {
         gameOver = true;
     }
 }
 
-void VerificaPegouComida()
+void CheckEatFood()
 {
-    if (quadro[cobraX][cobraY] == 2)
+    if (board[snakeX][snakeY] == 2)
     {
-        fruitX = rand() % alturaQuadro;
-        fruitY = rand() % larguraQuadro;
+        fruitX = rand() % heightBoard;
+        fruitY = rand() % widthBoard;
 
-        while (quadro[fruitX][fruitY] == 1 || quadro[fruitX][fruitY] >= 3)
+        while (board[fruitX][fruitY] == 1 || board[fruitX][fruitY] >= 3)
         {
-            fruitX = rand() % alturaQuadro;
-            fruitY = rand() % larguraQuadro;
+            fruitX = rand() % heightBoard;
+            fruitY = rand() % widthBoard;
         }
 
-        quadro[fruitX][fruitY] = 2;
-        pontuacao = pontuacao + 10;
-        tamanhoCobra = tamanhoCobra + 1;
+        board[fruitX][fruitY] = 2;
+        score = score + 10;
+        snakeSize = snakeSize + 1;
     }
 }
 
-void LimpaCobra()
+void CleanSnake()
 {
-    for (int i=0; i < alturaQuadro; i++)
+    for (int i=0; i < heightBoard; i++)
     {
-        for (int j=0; j < larguraQuadro; j++)
+        for (int j=0; j < widthBoard; j++)
         {
-            if (i == cobraX && j == cobraY)
+            if (i == snakeX && j == snakeY)
                 continue;
 
-            if (quadro[i][j] == 3)
-                quadro[i][j] = 0;
-            else if (quadro[i][j] == 4)
-                quadro[i][j] = 3;
-            else if (quadro[i][j] == 5)
-                quadro[i][j] = 4;
-            else if (quadro[i][j] == 6)
-                quadro[i][j] = 5;
-            else if (quadro[i][j] == 7)
-                quadro[i][j] = 6;
-            else if (quadro[i][j] == 8)
-                quadro[i][j] = 7;
-            else if (quadro[i][j] == 9)
-                quadro[i][j] = 8;
-            else if (quadro[i][j] == 10)
-                quadro[i][j] = 9;
-            else if (quadro[i][j] == 11)
-                quadro[i][j] = 10;
-            else if (quadro[i][j] == 12)
-                quadro[i][j] = 11;
+            if (board[i][j] == 3)
+                board[i][j] = 0;
+            else if (board[i][j] == 4)
+                board[i][j] = 3;
+            else if (board[i][j] == 5)
+                board[i][j] = 4;
+            else if (board[i][j] == 6)
+                board[i][j] = 5;
+            else if (board[i][j] == 7)
+                board[i][j] = 6;
+            else if (board[i][j] == 8)
+                board[i][j] = 7;
+            else if (board[i][j] == 9)
+                board[i][j] = 8;
+            else if (board[i][j] == 10)
+                board[i][j] = 9;
+            else if (board[i][j] == 11)
+                board[i][j] = 10;
+            else if (board[i][j] == 12)
+                board[i][j] = 11;
         }
     }
 }
 
-void CalculaPosicaoEFimJogo()
+void EvaluatePositionAndGameOver()
 {
-    Sleep(tempoJogo);
+    Sleep(playTime);
 
-    switch (direcao)
+    switch (direction)
     {
         case 1:
-            cobraY--;
-            VerificaPegouComida();
-            VerificaColisao();
-            quadro[cobraX][cobraY] = tamanhoCobra+2;
+            snakeY--;
+            CheckEatFood();
+            CheckColision();
+            board[snakeX][snakeY] = snakeSize+2;
             break;
         case 2:
-            cobraY++;
-            VerificaPegouComida();
-            VerificaColisao();
-            quadro[cobraX][cobraY] = tamanhoCobra+2;
+            snakeY++;
+            CheckEatFood();
+            CheckColision();
+            board[snakeX][snakeY] = snakeSize+2;
             break;
         case 3:
-            cobraX--;
-            VerificaPegouComida();
-            VerificaColisao();
-            quadro[cobraX][cobraY] = tamanhoCobra+2;
+            snakeX--;
+            CheckEatFood();
+            CheckColision();
+            board[snakeX][snakeY] = snakeSize+2;
             break;
         case 4:
-            cobraX++;
-            VerificaPegouComida();
-            VerificaColisao();
-            quadro[cobraX][cobraY] = tamanhoCobra+2;
+            snakeX++;
+            CheckEatFood();
+            CheckColision();
+            board[snakeX][snakeY] = snakeSize+2;
             break;
         default:
             break;
     }
 
-    LimpaCobra();
+    CleanSnake();
 }
 
-void ExibeQuadroGameOver()
+void ShowBoardGameOver()
 {
     system("cls");
-    cout<<"Parabens, sua pontuacao foi de: "<<pontuacao;
+    cout<<"Congratulations, you achiev the score: "<<score;
 }
 
 int main()
 {
-    MontaQuadro();
+    SetupBoard();
 
     while (!gameOver)
     {
-        ExibeQuadro();
-        LerTeclado();
-        CalculaPosicaoEFimJogo();
+        ShowBoard();
+        ReadKeyboard();
+        EvaluatePositionAndGameOver();
     }
 
-    ExibeQuadroGameOver();
+    ShowBoardGameOver();
 
     return 0;
 }
