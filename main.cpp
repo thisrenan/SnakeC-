@@ -1,9 +1,14 @@
 #include <iostream>
-#include <conio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <iostream>
 #ifdef _WIN32
 #include <Windows.h>
+#include <conio.h>
 #else
 #include <unistd.h>
+#include <stdio.h>
+#include <termios.h>
 #endif
 
 using namespace std;
@@ -66,8 +71,50 @@ void ShowBoard()
     cout<<"Score: "<<score;
 }
 
+#ifndef _WIN32
+int kbhit() {
+    struct termios oldt, newt;
+    int ch;
+    int oldf;
+
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
+
+    ch = getchar();
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    fcntl(STDIN_FILENO, F_SETFL, oldf);
+
+    if (ch != EOF) {
+        ungetc(ch, stdin);
+        return 1;
+    }
+
+    return 0;
+}
+
+char getch() {
+    struct termios oldt, newt;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    char ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return ch;
+}
+#endif
+
+
+
 void ReadKeyboard()
 {
+    #ifdef _WIN32
     if (_kbhit())
     {
         switch (_getch())
@@ -89,6 +136,29 @@ void ReadKeyboard()
             break;
         }
     }
+    #else
+    if (kbhit())
+    {
+        switch (getch())
+        {
+            case 'a':
+                direction = 1;
+            break;
+            case 'd':
+                direction = 2;
+            break;
+            case 'w':
+                direction = 3;
+            break;
+            case 's':
+                direction = 4;
+            break;
+            case 'x':
+                gameOver = true;
+            break;
+        }
+    }
+    #endif
 }
 
 void CheckColision()
@@ -157,7 +227,11 @@ void CleanSnake()
 
 void EvaluatePositionAndGameOver()
 {
+    #ifdef _WIN32
     Sleep(playTime);
+    #else
+    sleep(playTime);
+    #endif
 
     switch (direction)
     {
