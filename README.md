@@ -5,10 +5,10 @@ Load, run the game and enjoy :)
 This is the main work example at first programming class at UNIVALI - Universidade do Vale do Itajaí.
 
 
-# Statement in portuguese:
+# Statement:
 
 
-Universidade do Vale do Itajaí - Escola do Mar, Ciência e Tecnologia
+Universidade do Vale do Itajaí
 
 Prof. Renan Augusto Romig (renanromig@univali.br)
 
