@@ -7,13 +7,6 @@ This is the main work example at first programming class at UNIVALI - Universida
 
 # Statement:
 
-
-Universidade do Vale do Itajaí
-
-Prof. Renan Augusto Romig (renanromig@univali.br)
-
-Snake
-
 Snake (also known as "snake game") is a game that became known for several versions, the initial version of which began with the game Blockade in 1976, with several imitations being made in video games and computers. The game was released for Nokia cell phones in 1998 and became popular.
 
 The player controls a long, thin creature that crawls across the screen, collecting food (or some other item), without being able to collide with its own body or the "walls" that surround the game area. Each time the snake eats a piece of food, its tail grows, increasing the difficulty of the game. The user controls the direction of the snake's head (up, down, left and right) and its body follows.
